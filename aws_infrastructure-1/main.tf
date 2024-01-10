@@ -1,9 +1,14 @@
+# CREATING THE VIRTUAL PRIVATE CLOUD
+
 resource "aws_vpc" "my_custom_vpc"{
 	cidr_block = var.cidr
 	tags = {
 		Name = "my-custom"
 }
 }
+
+# CREATING TWO AWS-SUBNET IN TWO DIFFERENT AVAILABILITY ZONESINSIDE THE VPC
+
 resource "aws_subnet" "my_subnet_1" {
 	vpc_id = aws_vpc.my_custom_vpc.id
 	cidr_block = "10.0.0.0/24"
@@ -19,9 +24,13 @@ resource "aws_subnet" "my_subnet_2" {
 
 }
 
+# CREATING INTERNET GATEWAY 
+
 resource "aws_internet_gateway" "my_gateway_1" {
         vpc_id = aws_vpc.my_custom_vpc.id
 }
+
+# CREATING ROUTE TABLE
 
 resource "aws_route_table" "my_route_table_1" {
 	vpc_id = aws_vpc.my_custom_vpc.id
@@ -67,6 +76,7 @@ resource "aws_security_group" "my_scg_1" {
                 protocol = "tcp"
                 cidr_blocks = ["0.0.0.0/0"]
         }
+
 # ADDING THE OUTBOUND RULE (EGRESS)
 	
 	egress {
@@ -162,6 +172,8 @@ resource "aws_lb_listener" "my_listener" {
 		type = "forward"
 	}
 }
+
+# OUTPUT TO DISPLAY ON THE TERMINAL AFTER THE INFRASTRUCTURE IS READY
 
 output "load_balancer_dns" {
 	value = aws_lb.my_balancer.dns_name
